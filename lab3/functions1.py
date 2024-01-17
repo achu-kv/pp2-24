@@ -21,7 +21,7 @@ def solve(heads, legs):
     print(f'{rab} rabbits, {chi} chickens')
 
 # task 4
-def is_prime(p):
+def is_prime(n):
     if n < 2:
         return False
     for i in range(2, int(n ** 0.5) + 1):
