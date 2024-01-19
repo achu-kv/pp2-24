@@ -62,7 +62,8 @@ def permute(str):
 
 # task 6
 def reverse(str):
-    return str[::-1]
+    words = str.split()
+    return " ".join(words[::-1])
 
 # task 7
 def has_33(nums):

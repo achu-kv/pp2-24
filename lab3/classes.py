@@ -29,7 +29,10 @@ class Rectangle(Shape):
     def __init__(self, length, width):
         self.length = length
         self.width = width
-        self.area = length * width
+        self.area = 0
+    
+    def compute_area(self):
+        self.area = self.length * self.width
 
 # task 4
 class Point:
@@ -64,7 +67,7 @@ class Account:
         self.balance -= money
 
     def __repr__(self):
-        return f'Account({self.owner}, {self.balance})
+        return f'Account({self.owner}, {self.balance})'
 
 # task 6
 def is_prime(p):
