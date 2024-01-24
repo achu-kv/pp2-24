@@ -6,7 +6,7 @@ def Ngen(n):
 
 # task 2
 def Egen(n):
-    for i in range(n):
+    for i in range(n + 1):
         if i % 2 == 0:
             yield i
 
@@ -15,7 +15,7 @@ print(*list(Egen(n)), sep=", ")
     
 # task 3
 def tfgen(n):
-    for i in range(n):
+    for i in range(n + 1):
         if i % 12 == 0:
             yield i
 
