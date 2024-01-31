@@ -13,26 +13,26 @@ class CustomString:
 # task 2
 class Shape:
     def __init__(self):
-        self.area = 0
+        self.figure_area = 0
     
     def area(self):
-        print(self.area)
+        print(self.figure_area)
 
 
 class Square(Shape):
     def __init__(self, length):
         self.length = length
-        self.area = 4 * length 
+        self.figure_area = 4 * length 
 
 # task 3
 class Rectangle(Shape):
     def __init__(self, length, width):
         self.length = length
         self.width = width
-        self.area = 0
+        self.figure_area = 0
     
     def compute_area(self):
-        self.area = self.length * self.width
+        self.figure_area = self.length * self.width
 
 # task 4
 class Point:
@@ -70,7 +70,7 @@ class Account:
         return f'Account({self.owner}, {self.balance})'
 
 # task 6
-def is_prime(p):
+def is_prime(n):
     if n < 2:
         return False
     for i in range(2, int(n ** 0.5) + 1):
