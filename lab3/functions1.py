@@ -6,8 +6,8 @@ def grams_to_ounces(grams):
 def faren_to_c(F):
     return (5 / 9) * (F - 32)
 
-F = float(input())
-print(faren_to_c(F))
+# F = float(input())
+# print(faren_to_c(F))
 
 # task 3
 def solve(heads, legs):
@@ -38,12 +38,13 @@ def filter_prime(primes):
 
 # task 5
 # if we can use itertools:
-from itertools import permutations
 
-def permute(str):
-    perms = permutations(str)
-    for i in perms:
-        print("".join(i))
+# from itertools import permutations
+
+# def permute(str):
+#     perms = permutations(str)
+#     for i in perms:
+#         print("".join(i))
 
 # if we should write own:
 from collections import deque #i used this to maintain order, can be built using default list too
