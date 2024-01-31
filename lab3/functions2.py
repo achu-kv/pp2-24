@@ -24,7 +24,7 @@ def average_imdb(movies):
         return 0
     total = 0
     for i in movies:
-        total += movies["imdb"]
+        total += i["imdb"]
     return total / len(movies)
 
 # task 5

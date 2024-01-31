@@ -4,7 +4,7 @@ def grams_to_ounces(grams):
 
 # task 2
 def faren_to_c(F):
-    return (5 / 9) * (F – 32)
+    return (5 / 9) * (F - 32)
 
 F = float(input())
 print(faren_to_c(F))
@@ -84,7 +84,7 @@ def spy_game(nums):
     return False
 
 # task 9
-def volume(R):
+def volume(r):
     return (4 / 3) * 3.14 * (r ** 3)
 
 # task 10
@@ -117,7 +117,7 @@ def game():
     user = input("Hello! What is your name?\n")
     print(f'Well, {user}, I am thinking of a number between 1 and 20.')
     guess = 0
-    while:
+    while 1:
         guess += 1
         unum = int(input("Take a guess.\n"))
         if num == unum:
@@ -127,9 +127,3 @@ def game():
         else:
             print("Your guess is too low.")
     print(f'Good job, {user}! You guessed my number in {guess} guesses!')
-
-# task 14
-# this file :^)
-        
-    
-
