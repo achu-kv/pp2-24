@@ -11,7 +11,7 @@ def Egen(n):
             yield i
 
 n = int(input())
-print(*list(Egen(n)), sep=", ")
+print(*Egen(n), sep=", ")
     
 # task 3
 def tfgen(n):
