@@ -2,7 +2,7 @@ import json
 
 def report(data):
     print("Interface Status", "=" * 80, sep="\n")
-    print("DN                                                 Description           Speed    MTU")
+    print(f'DN{' ' * 49}Description{' ' * 11}Speed    MTU')
     print(f'{"-" * 50} {"-" * 20} {"-" * 7} {"-" * 6}')
     desc = " " * 20
     for i in data["imdata"]:
