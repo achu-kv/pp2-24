@@ -22,6 +22,7 @@ def test_path(path):
     if not os.path.exists(path):
         print(f'Path {path} does not exist')
         return
+    print(f'Path {path} exists!')
     rdbl = "yes" if os.access(path, os.R_OK) else "no"
     print(f'Readable: {rdbl}')
 

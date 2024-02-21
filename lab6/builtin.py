@@ -1,6 +1,7 @@
 import functools
 import time, math
 
+
 # task 1
 def mult(nums):
     return functools.reduce(lambda x, y: x * y, nums)
@@ -19,6 +20,7 @@ def up_low(line):
 
 # task 3
 def is_polyndrome(line):
+    # return line == line[::-1]
     i = list(line)
     i.reverse()
     return list(line) == i
@@ -27,6 +29,10 @@ def is_polyndrome(line):
 def sq_after_time(num, ms):
     time.sleep(ms * 0.001)
     print(f'Square root of {num} after {ms} miliseconds is {math.sqrt(num)}')
+
+num = int(input())
+ms = int(input())
+sq_after_time(num, ms)
 
 # task 5
 def all_true(tup):
