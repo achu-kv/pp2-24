@@ -39,12 +39,14 @@ def snk_to_cml(line):
 
 # task 8
 def split_ups(line):
-    return re.sub('[A-Z][a-z]*', lambda x: ' ' + x.group(), line).split()
+    return re.sub('[A-Z]+[^A-Z]+', lambda x: ' ' + x.group(), line).split()
 
 # task 9
 def rep_ups(line):   
-    return re.sub('[A-Z][a-z]*', lambda x: ' ' + x.group(), line).strip()
+    return re.sub('[A-Z]+[^A-Z]+', lambda x: ' ' + x.group(), line).strip()
 
 # task 10
 def cml_to_snk(line):
     return re.sub('[a-z][A-Z]', lambda x: x.group()[0] + '_' + x.group()[1].lower(), line).lower()
+
+print(split_ups('BBBioWorldHelloW12rld1'))
