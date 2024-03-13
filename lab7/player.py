@@ -12,7 +12,7 @@ class Player:
         files = os.listdir(path)
         for i in files:
             f = i.split('.')
-            if f[-1] in ('mp3', 'ogg', 'wav'):
+            if f and f[-1] in ('mp3', 'ogg', 'wav'):
                 self.songs.append(os.path.join(path, i))
 
     def get_current(self):
