@@ -4,4 +4,5 @@ Player controls:<br>
 <li>Left arrow - previous</li>
 <li>Space - stop</li>
 <li>Escape - quit</li>
-</ul>
+</ul><br>
+To add music to player: create folder 'music' and put something there
