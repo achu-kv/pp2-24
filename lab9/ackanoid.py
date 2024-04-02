@@ -8,6 +8,8 @@ class Ackanoid:
         self.h = h
         self.unb = unb
         self.bon = bon
+        self.__pause = False # pause state
+        self.__over = False # to prevent pause on gameover/win screen
         
         self.def_clr = (0, 255, 0)
         self.unb_clr = (255, 0, 0)
@@ -16,7 +18,6 @@ class Ackanoid:
         self.__loop()
     
     def __loop(self):
-
         while True:
             pygame.init()
             self.screen = pygame.display.set_mode((self.w, self.h), pygame.RESIZABLE)
@@ -37,18 +38,26 @@ class Ackanoid:
                 return
 
     def __game(self):
+        self.__over = False
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return False
-            key = pygame.key.get_pressed()
-            
-            if key[pygame.K_ESCAPE]:
-                return False
-            elif key[pygame.K_r]:
-                return True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and not self.__over:
+                        self.__pause = not self.__pause
+                    elif event.key == pygame.K_r:
+                        return True
+                    elif event.key == pygame.K_ESCAPE:
+                        return False
 
+            key = pygame.key.get_pressed()
             self.screen.fill((0, 0, 0))
+
+            if self.__pause:
+                self.__draw_pause()
+                pygame.display.flip()
+                continue
 
             pygame.draw.rect(self.screen, pygame.Color(255, 255, 255), self.paddle)
 
@@ -96,9 +105,11 @@ class Ackanoid:
             #Win/lose screens
             if self.ball.bottom > self.h:
                 self.screen.fill((0, 0, 0))
+                self.__over = True
                 self.screen.blit(self.losetext, self.losetextRect)
             elif not len(self.block_list) - self.unb:
                 self.screen.fill((255,255, 255))
+                self.__over = True
                 self.screen.blit(self.wintext, self.wintextRect)
             
                 # increasing speed
@@ -114,7 +125,6 @@ class Ackanoid:
                 self.paddle.left -= self.paddleSpeed
             if key[pygame.K_RIGHT] and self.paddle.right < self.w:
                 self.paddle.right += self.paddleSpeed
-
 
             pygame.display.flip()
             self.clock.tick(60)
@@ -234,4 +244,10 @@ class Ackanoid:
         self.screen.fill((0, 0, 0))
         self.screen.blit(self.wintext, self.wintextRect)
 
+    def __draw_pause(self):
+        pause_font = pygame.font.SysFont('comicsansms', 40)
+        pause_text = pause_font.render('PAUSED', True, (255, 255, 255))
+        pause_text_rect = pause_text.get_rect(center=(self.w // 2, self.h // 2))
+        self.screen.blit(pause_text, pause_text_rect)
+        
 Ackanoid(unb=5, bon=2)
