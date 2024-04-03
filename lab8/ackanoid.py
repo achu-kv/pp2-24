@@ -101,12 +101,12 @@ class Ackanoid:
                 self.screen.fill((255,255, 255))
                 self.screen.blit(self.wintext, self.wintextRect)
             
-                # increasing speed
-                time = pygame.time.get_ticks()
-                self.paddleSpeed = 20 + (time - self.shrink) // 1000
+            # increasing speed
+            time = pygame.time.get_ticks()
+            self.paddleSpeed = 20 + (time - self.shrink) // 1000
 
-                # shrinking paddle 
-                self.__change_paddle(150 - (time - self.shrink) // 1000, 25)
+            # shrinking paddle 
+            self.__change_paddle(150 - (time - self.shrink) // 1000, 25)
 
             #Paddle Control
             key = pygame.key.get_pressed()

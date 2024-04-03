@@ -112,12 +112,12 @@ class Ackanoid:
                 self.__over = True
                 self.screen.blit(self.wintext, self.wintextRect)
             
-                # increasing speed
-                time = pygame.time.get_ticks()
-                self.paddleSpeed = 20 + (time - self.shrink) // 1000
+            # increasing speed
+            time = pygame.time.get_ticks()
+            self.paddleSpeed = 20 + (time - self.shrink) // 8000
 
-                # shrinking paddle 
-                self.__change_paddle(150 - (time - self.shrink) // 1000, 25)
+            # shrinking paddle 
+            self.__change_paddle(150 - (time - self.shrink) // 8000, 25)
 
             #Paddle Control
             key = pygame.key.get_pressed()
@@ -250,4 +250,4 @@ class Ackanoid:
         pause_text_rect = pause_text.get_rect(center=(self.w // 2, self.h // 2))
         self.screen.blit(pause_text, pause_text_rect)
         
-Ackanoid(unb=5, bon=2)
+Ackanoid(unb=5, bon=0)
