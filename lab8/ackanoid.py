@@ -29,7 +29,7 @@ class Ackanoid:
             self.__sound()
             self.__score()
             self.__texts()
-            self.shrink = 0
+            self.shrink = pygame.time.get_ticks()
 
             restart = self.__game()
 
@@ -103,10 +103,10 @@ class Ackanoid:
             
             # increasing speed
             time = pygame.time.get_ticks()
-            self.paddleSpeed = 20 + (time - self.shrink) // 1000
+            self.paddleSpeed = 20 + (time - self.shrink) // 800
 
             # shrinking paddle 
-            self.__change_paddle(150 - (time - self.shrink) // 1000, 25)
+            self.__change_paddle(150 - (time - self.shrink) // 800, 25)
 
             #Paddle Control
             key = pygame.key.get_pressed()

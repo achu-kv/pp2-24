@@ -8,8 +8,8 @@ class Ackanoid:
         self.h = h
         self.unb = unb
         self.bon = bon
-        self.__pause = False # pause state
-        self.__over = False # to prevent pause on gameover/win screen
+        self.__pause_state = False # pause state
+        self.__over_state = False # to prevent pause on gameover/win screen
         
         self.def_clr = (0, 255, 0)
         self.unb_clr = (255, 0, 0)
@@ -22,7 +22,8 @@ class Ackanoid:
             pygame.init()
             self.screen = pygame.display.set_mode((self.w, self.h), pygame.RESIZABLE)
             self.clock = pygame.time.Clock()
-            
+
+            self.__ball_init()
             self.__generate_ball()
             self.__generate_paddle()
             self.__generate_bricks()
@@ -30,22 +31,68 @@ class Ackanoid:
             self.__sound()
             self.__score()
             self.__texts()
-            self.shrink = 0
+            self.shrink = pygame.time.get_ticks()
 
             restart = self.__game()
 
             if not restart:
                 return
 
+    def __pause(self):
+        self.__draw_pause()
+        self.__settings_btn()
+        pygame.display.flip()
+
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and not self.__over_state:
+                        self.__pause_state = not self.__pause_state
+                        return
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.settextRectb.collidepoint(event.pos):
+                        self.__settings()
+                        return
+
+                    
+    def __settings(self):
+        self.__draw_settings()
+        self.__draw_settings_menu()
+        pygame.display.flip()
+
+        while True:
+            self.__draw_size()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and not self.__over_state:
+                        self.__pause_state = not self.__pause_state
+                        return
+                    if event.key == pygame.K_RIGHT:
+                        self.ballRadius += 0.5
+                    if event.key == pygame.K_LEFT:
+                        if self.ballRadius != 0.5:
+                            self.ballRadius -= 0.5
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.speedtextRect.collidepoint(event.pos):
+                        self.shrink = pygame.time.get_ticks()
+                        self.offset = pygame.time.get_ticks()
+                    if self.regtextRect.collidepoint(event.pos):
+                        self.__generate_bricks()
+
+
     def __game(self):
-        self.__over = False
+        self.__over_state = False
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return False
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE and not self.__over:
-                        self.__pause = not self.__pause
+                    if event.key == pygame.K_SPACE and not self.__over_state:
+                        self.__pause_state = not self.__pause_state
                     elif event.key == pygame.K_r:
                         return True
                     elif event.key == pygame.K_ESCAPE:
@@ -54,10 +101,10 @@ class Ackanoid:
             key = pygame.key.get_pressed()
             self.screen.fill((0, 0, 0))
 
-            if self.__pause:
-                self.__draw_pause()
-                pygame.display.flip()
-                continue
+            if self.__pause_state:
+                self.offset = pygame.time.get_ticks()
+                self.__pause()
+                self.shrink += (pygame.time.get_ticks() - self.offset)
 
             pygame.draw.rect(self.screen, pygame.Color(255, 255, 255), self.paddle)
 
@@ -105,19 +152,19 @@ class Ackanoid:
             #Win/lose screens
             if self.ball.bottom > self.h:
                 self.screen.fill((0, 0, 0))
-                self.__over = True
+                self.__over_state = True
                 self.screen.blit(self.losetext, self.losetextRect)
             elif not len(self.block_list) - self.unb:
                 self.screen.fill((255,255, 255))
-                self.__over = True
+                self.__over_state = True
                 self.screen.blit(self.wintext, self.wintextRect)
             
             # increasing speed
             time = pygame.time.get_ticks()
-            self.paddleSpeed = 20 + (time - self.shrink) // 8000
+            self.paddleSpeed = 20 + (time - self.shrink) // 1000
 
             # shrinking paddle 
-            self.__change_paddle(150 - (time - self.shrink) // 8000, 25)
+            self.__change_paddle(150 - (time - self.shrink) // 1000, 25)
 
             #Paddle Control
             key = pygame.key.get_pressed()
@@ -129,14 +176,13 @@ class Ackanoid:
             pygame.display.flip()
             self.clock.tick(60)
 
-    def __generate_ball(self):
+    def __ball_init(self):
         self.ballSpeed = 6
+        self.ballRadius = 20
 
-        ballRadius = 20
-        ball_rect = int(ballRadius * 2 ** 0.5)
-
+    def __generate_ball(self):    
+        ball_rect = int(self.ballRadius * 2 ** 0.5)
         self.ball_rect = ball_rect
-        self.ballRadius = ballRadius
         self.ball = pygame.Rect(random.randrange(ball_rect, self.w - ball_rect), self.h // 2, ball_rect, ball_rect)
         self.dx, self.dy = 1, -1
 
@@ -220,21 +266,44 @@ class Ackanoid:
                 self.block_list.append(pygame.Rect(10 + 120 * i, 50 + 70 * j, 100, 50))
 
     def __texts(self):
-        losefont = pygame.font.SysFont('comicsansms', 40)
-        losetext = losefont.render('Game Over', True, (255, 255, 255))
-        losetextRect = losetext.get_rect()
-        losetextRect.center = (self.w // 2, self.h // 2)
+        self.__bigfont = pygame.font.SysFont('comicsansms', 40)
+        self.__smallfont = pygame.font.SysFont('comicsansms', 25)
+        btnrect = pygame.Rect(0, 0, 216, 35)
 
-        winfont = pygame.font.SysFont('comicsansms', 40)
-        wintext = winfont.render('You win yay', True, (0, 0, 0))
-        wintextRect = wintext.get_rect()
-        wintextRect.center = (self.w // 2, self.h // 2)
+        # lose/win texts 
+        self.losetext = self.__bigfont.render('Game over', True, (255, 255, 255))
+        self.losetextRect = self.losetext.get_rect()
+        self.losetextRect.center = (self.w // 2, self.h // 2)
 
-        self.losetext = losetext
-        self.losetextRect = losetextRect
+        self.wintext = self.__bigfont.render('You win yay', True, (0, 0, 0))
+        self.wintextRect = self.wintext.get_rect()
+        self.wintextRect.center = (self.w // 2, self.h // 2)
 
-        self.wintext = wintext
-        self.wintextRect = wintextRect
+        # pause text
+        self.pausetext = self.__bigfont.render('Pause', True, (255, 255, 255))
+        self.pausetextRect = self.pausetext.get_rect()
+        self.pausetextRect.center = (self.w // 2, self.h // 2 - 100)
+
+        # settings text menu
+        self.settextw = self.__bigfont.render('Settings', True, (255, 255, 255))
+        self.settextRectw = self.settextw.get_rect()
+        self.settextRectw.center = (self.w // 2, self.h // 2 - 100)
+
+        # settings text button
+        self.settextb = self.__smallfont.render('Settings', True, (0, 0, 0))
+        self.settextRectb = btnrect.copy()
+        self.settextRectb.center = (self.w // 2, self.h // 2 + 50)
+
+        self.speedtext = self.__smallfont.render('Reset paddle', True, (0, 0, 0))
+        self.speedtextRect = btnrect.copy()
+        self.speedtextRect.center = (self.w // 2, self. h // 2 + 50)
+
+        self.regtext = self.__smallfont.render('Regenerate blocks', True, (0, 0, 0))
+        self.regtextRect = btnrect.copy()
+        self.regtextRect.center = (self.w // 2, self.h // 2 + 100)
+
+        self.ballsizeRect = btnrect.copy()
+        self.ballsizeRect.center = (self.w // 2, self.h // 2 + 150)
 
     def lose_draw(self):
         self.screen.fill((0, 0, 0))
@@ -245,9 +314,30 @@ class Ackanoid:
         self.screen.blit(self.wintext, self.wintextRect)
 
     def __draw_pause(self):
-        pause_font = pygame.font.SysFont('comicsansms', 40)
-        pause_text = pause_font.render('PAUSED', True, (255, 255, 255))
-        pause_text_rect = pause_text.get_rect(center=(self.w // 2, self.h // 2))
-        self.screen.blit(pause_text, pause_text_rect)
-        
-Ackanoid(unb=5, bon=0)
+        self.screen.fill((0, 0, 0))
+        self.screen.blit(self.pausetext, self.pausetextRect)
+
+    def __draw_settings(self):
+        self.screen.fill((0, 0, 0))
+        self.screen.blit(self.settextw, self.settextRectw)
+
+    def __settings_btn(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.settextRectb)
+        self.screen.blit(self.settextb, self.settextRectb)
+
+    def __draw_settings_menu(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.speedtextRect)
+        pygame.draw.rect(self.screen, (255, 255, 255), self.regtextRect)
+
+        self.screen.blit(self.speedtext, self.speedtextRect)
+        self.screen.blit(self.regtext, self.regtextRect)
+        pygame.display.flip()
+
+    def __draw_size(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.ballsizeRect)
+        txt = self.__smallfont.render(f'Ball size: {self.ballRadius}', True, (0, 0, 0))
+
+        self.screen.blit(txt, self.ballsizeRect)
+        pygame.display.flip()
+    
+Ackanoid(unb=5, bon=2)
